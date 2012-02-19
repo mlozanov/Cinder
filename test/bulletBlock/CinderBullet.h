@@ -7,12 +7,15 @@
  *
  */
 
+#pragma once
+
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 #include "cinder/app/AppBasic.h"
 #include "cinder/TriMesh.h"
 #include "cinder/AxisAlignedBox.h"
 #include "cinder/Sphere.h"
+#include "cinder/Vector.h"
 
 const float PI = 3.14159265;
 
@@ -22,7 +25,7 @@ namespace cinder {
 	
 	namespace bullet {
 
-	Matrix44f getWorldTransform(const btRigidBody* body)
+	static Matrix44f getWorldTransform(const btRigidBody* body)
 	{
 		btTransform trans;
 		body->getMotionState()->getWorldTransform(trans);
@@ -35,13 +38,18 @@ namespace cinder {
 	{
 		return btVector3(v.x, v.y, v.z);
 	}
+        
+    inline Vec3f toCinderVector3(const btVector3& v)
+    {
+        return Vec3f(v.m_floats[0], v.m_floats[1], v.m_floats[2]);
+    }
 	
 	inline btQuaternion toBulletQuaternion(const Quatf &q)
 	{
 		return btQuaternion(q.v.x, q.v.y, q.v.z, q.w);
 	}
 	
-	btHeightfieldTerrainShape* createHeightfieldTerrainShape(Channel32f* chan, int stickWidth, int stickLength, float heightScale, float minHeight, float maxHeight, int upAxis, Vec3f scale)
+	static btHeightfieldTerrainShape* createHeightfieldTerrainShape(Channel32f* chan, int stickWidth, int stickLength, float heightScale, float minHeight, float maxHeight, int upAxis, Vec3f scale)
 	{
 		btHeightfieldTerrainShape* hfShape = new btHeightfieldTerrainShape(	stickWidth, stickLength, chan->getData(), 
 																			heightScale, minHeight, maxHeight, upAxis, PHY_FLOAT, false);
@@ -53,7 +61,7 @@ namespace cinder {
 	
 
 		
-	btBvhTriangleMeshShape* createStaticConcaveMeshShape(TriMesh mesh, Vec3f scale, float margin=0.05f)
+	static btBvhTriangleMeshShape* createStaticConcaveMeshShape(TriMesh mesh, Vec3f scale, float margin=0.05f)
 	{
 		std::vector<Vec3f> vertices = mesh.getVertices();
 		std::vector<uint32_t> indices = mesh.getIndices();
@@ -75,7 +83,7 @@ namespace cinder {
 		return shape;
 	}
 		
-	btRigidBody* createStaticRigidBody(btDynamicsWorld* world, btCollisionShape* shape, Vec3f position)
+	static btRigidBody* createStaticRigidBody(btDynamicsWorld* world, btCollisionShape* shape, Vec3f position)
 	{
 		btDefaultMotionState *motionState = new btDefaultMotionState(btTransform(bullet::toBulletQuaternion(Quatf()),toBulletVector3((position))));
 		btRigidBody::btRigidBodyConstructionInfo bodyCI(0,motionState,shape,btVector3(0,0,0));
@@ -86,7 +94,7 @@ namespace cinder {
 		
 	}
 	
-	btConvexHullShape* createConvexHullShape(TriMesh mesh, Vec3f scale)
+	static btConvexHullShape* createConvexHullShape(TriMesh mesh, Vec3f scale)
 	{
 		std::vector<Vec3f> vertices = mesh.getVertices();
 		
@@ -100,7 +108,7 @@ namespace cinder {
 		return btHull;
 	}
 	
-	btRigidBody* createConvexHullBody(btDynamicsWorld* world, btConvexHullShape* shape, Vec3f position, float mass)
+	static btRigidBody* createConvexHullBody(btDynamicsWorld* world, btConvexHullShape* shape, Vec3f position, float mass)
 	{
 		btDefaultMotionState *motionState = new btDefaultMotionState(btTransform(toBulletQuaternion(Quatf()),toBulletVector3(position)));
 		btRigidBody::btRigidBodyConstructionInfo bodyCI(mass,motionState,shape,btVector3(0,0,0));
@@ -110,7 +118,7 @@ namespace cinder {
 		return body;
 	}
 	
-	btRigidBody* createBox(btDynamicsWorld *world, Vec3f size, Quatf rotation, Vec3f position)
+	static btRigidBody* createBox(btDynamicsWorld *world, Vec3f size, Quatf rotation, Vec3f position)
 	{
 		btCollisionShape *box = new btBoxShape(toBulletVector3(size) / 2.0f);
 		btDefaultMotionState *motionState = new btDefaultMotionState(btTransform(toBulletQuaternion(rotation),toBulletVector3(position)));
@@ -126,7 +134,7 @@ namespace cinder {
 		return rigidBody;
 	}
 	
-	btRigidBody* createSphere(btDynamicsWorld *world, float radius, Quatf rotation, Vec3f position)
+	static btRigidBody* createSphere(btDynamicsWorld *world, float radius, Quatf rotation, Vec3f position)
 	{
 		btCollisionShape *sphere = new btSphereShape((btScalar) radius);
 		btDefaultMotionState *motionState = new btDefaultMotionState(btTransform(toBulletQuaternion(rotation),toBulletVector3(position)));
@@ -142,7 +150,7 @@ namespace cinder {
 		return rigidBody;
 	}
 	
-    btRigidBody* create(btDynamicsWorld *world, AxisAlignedBox3f box, Quatf rotation, Vec3f position)
+    static btRigidBody* create(btDynamicsWorld *world, AxisAlignedBox3f box, Quatf rotation, Vec3f position)
 	{
 		Vec3f min = box.getMin();
 		Vec3f max = box.getMax();
@@ -154,7 +162,7 @@ namespace cinder {
 		
 	}
 	
-	btRigidBody* create(btDynamicsWorld *world, Sphere sphere, Quatf rotation, Vec3f position)
+	static btRigidBody* create(btDynamicsWorld *world, Sphere sphere, Quatf rotation, Vec3f position)
 	{
 		return createSphere(world, sphere.getRadius(), rotation, position);		
 	}
