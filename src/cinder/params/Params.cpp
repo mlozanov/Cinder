@@ -25,6 +25,8 @@
 
 #include "AntTweakBar.h"
 
+#include <glm/glm.hpp>
+
 #include <boost/assign/list_of.hpp>
 
 using namespace std;
@@ -276,6 +278,17 @@ void InterfaceGl::addText( const std::string &name, const std::string &optionsSt
 {
 	TwAddButton( mBar.get(), name.c_str(), NULL, NULL, optionsStr.c_str() );
 }
+
+void InterfaceGl::addParam( const std::string &name, glm::vec3 *param, const std::string &optionsStr, bool readOnly )
+{
+	implAddParam( name, param, TW_TYPE_DIR3F, optionsStr, readOnly );
+} 
+
+void InterfaceGl::addParam( const std::string &name, glm::quat *param, const std::string &optionsStr, bool readOnly )
+{
+	implAddParam( name, param, TW_TYPE_QUAT4F, optionsStr, readOnly );
+} 
+
 
 namespace { // anonymous namespace
 void TW_CALL implButtonCallback( void *clientData )

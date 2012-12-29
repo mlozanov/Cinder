@@ -26,6 +26,9 @@
 #include "cinder/Quaternion.h"
 #include "cinder/Function.h"
 
+#include <glm/glm.hpp>
+#include <glm/ext.hpp>
+
 #include <string>
 
 typedef struct CTwBar TwBar;
@@ -59,6 +62,10 @@ class InterfaceGl {
 	void	addButton( const std::string &name, const std::function<void()> &callback, const std::string &optionsStr = "" );
 	void	removeParam( const std::string &name );
 	void	setOptions( const std::string &name = "", const std::string &optionsStr = "" );
+
+    //glm 
+	void	addParam( const std::string &name, glm::vec3 *vectorParam, const std::string &optionsStr = "", bool readOnly = false );
+	void	addParam( const std::string &name, glm::quat *quatParam, const std::string &optionsStr = "", bool readOnly = false );
 
  protected:
 	void	implAddParam( const std::string &name, void *param, int type, const std::string &optionsStr, bool readOnly ); 
