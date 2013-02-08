@@ -40,6 +40,10 @@ using boost::int64_t;
 using boost::uint64_t;
 
 #define CINDER_CINDER
+    
+//#if defined (__GXX_EXPERIMENTAL_CXX0X) || __cplusplus >= 201103L
+//#define CINDER_CXX11
+//#endif
 
 #if defined(_WIN32) || defined(__WIN32__) || defined(WIN32)
 	#define CINDER_MSW
@@ -67,6 +71,12 @@ using boost::uint64_t;
 #if defined( _MSC_VER ) && ( _MSC_VER >= 1600 )
 	#include <memory>
 #elif defined( CINDER_COCOA )
+
+#if defined(CINDER_CXX11)
+#include <memory>
+    namespace std {
+    }
+#else
 	#include <tr1/memory>
 	namespace std {
 		using std::tr1::shared_ptr;
@@ -76,6 +86,8 @@ using boost::uint64_t;
 		using std::tr1::const_pointer_cast;
 		using std::tr1::enable_shared_from_this;
 	}
+#endif
+
 #else
 	#include <boost/shared_ptr.hpp>
 	#include <boost/enable_shared_from_this.hpp>

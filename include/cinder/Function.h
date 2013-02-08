@@ -31,15 +31,24 @@
 #if defined( _MSC_VER ) && ( _MSC_VER >= 1600 )
 	#include <functional>
 #elif defined( CINDER_COCOA )
+
+#if defined (CINDER_CXX11)
+    #include <functional>
+#else
 	#include <tr1/functional>
+#endif
+
 #else
 	#include <boost/tr1/functional.hpp>
 #endif
+
+#if !defined (CINDER_CXX11)
 namespace std {
 	using std::tr1::function;
 	using std::tr1::bind;
     using namespace std::tr1::placeholders;
 }
+#endif
 
 namespace cinder {
 
